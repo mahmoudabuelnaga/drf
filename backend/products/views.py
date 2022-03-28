@@ -4,7 +4,7 @@ from .models import Product
 from .serializers import ProductSerializer
 # Create your views here.
 
-class ProductCreateAPIView(generics.CreateAPIView):
+class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
@@ -24,5 +24,5 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
 
 
 # api views paths
-product_create_api_view = ProductCreateAPIView.as_view()
+product_create_api_view = ProductListCreateAPIView.as_view()
 product_detail_api_view = ProductDetailAPIView.as_view()
