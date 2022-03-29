@@ -1,3 +1,4 @@
+from cgitb import lookup
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 
@@ -22,9 +23,32 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
             content = title
         serializer.save(content=content)
 
+
+
 class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    
+class ProductUpdateAPIView(generics.UpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_fields = 'pk'
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        if not instance.content:
+            instance.content = instance.title
+
+
+class ProductDestroyAPIView(generics.DestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_fields = 'pk'
+
+    def perform_delete(self, instance):
+        super().perform_delete(instance)
+
+
 
 @api_view(['GET','POST'])
 def product_alt_view(request, pk=None, *args, **kwargs):
@@ -57,3 +81,5 @@ def product_alt_view(request, pk=None, *args, **kwargs):
 # api views paths
 product_create_api_view = ProductListCreateAPIView.as_view()
 product_detail_api_view = ProductDetailAPIView.as_view()
+product_update_api_view = ProductUpdateAPIView.as_view()
+product_delete_api_view = ProductDestroyAPIView.as_view()
